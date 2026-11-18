@@ -4,29 +4,29 @@
 <style>
 /* Layout: 一支手機畫面(左)配一欄示範資訊(右);窄螢幕時上下堆疊。 */
 :root{
-  --bg:#E7F0ED; --surface:#FFFFFF; --surface-2:#F1F7F5; --ink:#1F2D2A; --ink-2:#4B5F5A; --line:#D2E0DB;
-  --primary:#22756B; --on-primary:#FFFFFF; --primary-soft:#D5EBE6; --on-soft:#12453F;
+  --bg:#EEDFF6; --surface:#FFFBFF; --surface-2:#F7EEFB; --ink:#2E2236; --ink-2:#645470; --line:#DECBEA;
+  --primary:#8A3FA8; --on-primary:#FFFFFF; --primary-soft:#EBD6F5; --on-soft:#4A1D63;
   --amber-soft:#FCEBC8; --on-amber:#4A3208;
   --orange-soft:#FFE0C7; --on-orange:#6B3410;
   --crit:#B3382F; --crit-soft:#FADDDA; --on-crit:#6E1D17;
-  --fur:#E9A94F; --ear:#C47D2F; --muzzle:#FCE5C0; --blaze:#FFF4DE; --nose:#3A2A1E; --blush:#F4A394; --tongue:#EE7C88; --collar:#22756B; --tag:#F6D14C;
-  --shadow:0 12px 32px rgba(25,50,45,.14);
+  --fur:#E9A94F; --ear:#C47D2F; --muzzle:#FCE5C0; --blaze:#FFF4DE; --nose:#3A2A1E; --blush:#F4A394; --tongue:#EE7C88; --collar:#8A3FA8; --tag:#F6D14C;
+  --shadow:0 12px 32px rgba(70,30,95,.16);
   --font-body:'Noto Sans TC',system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif;
   --font-num:'Fredoka','Noto Sans TC',system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0E1816; --surface:#17231F; --surface-2:#1E2D29; --ink:#E7F1EE; --ink-2:#A3B8B2; --line:#2B3C37;
-  --primary:#63C7B8; --on-primary:#0B2622; --primary-soft:#1F3B36; --on-soft:#BFEBE3;
+  --bg:#1C1326; --surface:#271A34; --surface-2:#322340; --ink:#F4E9FA; --ink-2:#BFAACE; --line:#44304F;
+  --primary:#D9A2F0; --on-primary:#2A0F3B; --primary-soft:#432A58; --on-soft:#EDD4F9;
   --amber-soft:#3D2F14; --on-amber:#F6D9A0; --orange-soft:#44301C; --on-orange:#F6CFAA;
   --crit:#FF8E84; --crit-soft:#4A2320; --on-crit:#FFCBC6;
-  --fur:#D99A45; --ear:#A9692A; --muzzle:#F2D6AC; --blaze:#FFF0D4; --collar:#63C7B8;
+  --fur:#D99A45; --ear:#A9692A; --muzzle:#F2D6AC; --blaze:#FFF0D4; --collar:#D9A2F0;
   --shadow:0 12px 32px rgba(0,0,0,.4); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0E1816; --surface:#17231F; --surface-2:#1E2D29; --ink:#E7F1EE; --ink-2:#A3B8B2; --line:#2B3C37;
-  --primary:#63C7B8; --on-primary:#0B2622; --primary-soft:#1F3B36; --on-soft:#BFEBE3;
+  --bg:#1C1326; --surface:#271A34; --surface-2:#322340; --ink:#F4E9FA; --ink-2:#BFAACE; --line:#44304F;
+  --primary:#D9A2F0; --on-primary:#2A0F3B; --primary-soft:#432A58; --on-soft:#EDD4F9;
   --amber-soft:#3D2F14; --on-amber:#F6D9A0; --orange-soft:#44301C; --on-orange:#F6CFAA;
   --crit:#FF8E84; --crit-soft:#4A2320; --on-crit:#FFCBC6;
-  --fur:#D99A45; --ear:#A9692A; --muzzle:#F2D6AC; --blaze:#FFF0D4; --collar:#63C7B8;
+  --fur:#D99A45; --ear:#A9692A; --muzzle:#F2D6AC; --blaze:#FFF0D4; --collar:#D9A2F0;
   --shadow:0 12px 32px rgba(0,0,0,.4); color-scheme:dark}
 
 *{box-sizing:border-box}
@@ -217,7 +217,7 @@ textarea{width:100%;min-height:76px;border-radius:12px;border:1.5px solid var(--
 
 /* 覆蓋層 */
 .sheet-wrap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;z-index:5}
-.scrim{position:absolute;inset:0;background:rgba(8,20,17,.5);cursor:default}
+.scrim{position:absolute;inset:0;background:rgba(26,10,36,.5);cursor:default}
 .sheet{position:relative;background:var(--surface);border-radius:22px 22px 0 0;padding:16px 16px 20px;max-height:88%;overflow-y:auto;display:grid;gap:14px;animation:up .22s ease-out}
 @keyframes up{from{transform:translateY(24px);opacity:.4}}
 .sheet-head{display:flex;justify-content:space-between;align-items:center}
