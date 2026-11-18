@@ -1,4 +1,4 @@
-<title>來福校園陪伴</title>
+<title>Brown校園陪伴</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <style>
@@ -91,7 +91,7 @@ ul{padding-left:1.1em}
 .nav button[aria-current="page"]{color:var(--primary);font-weight:700}
 .nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
-/* 來福 */
+/* Brown */
 .dog{display:block;width:100%;height:100%;overflow:visible}
 .dog .fur{fill:var(--fur)} .dog .ear{fill:var(--ear)} .dog .muzzle{fill:var(--muzzle)} .dog .blaze{fill:var(--blaze)}
 .dog .nose{fill:var(--nose)} .dog .blush{fill:var(--blush);opacity:.7} .dog .tongue{fill:var(--tongue)}
@@ -236,7 +236,7 @@ textarea{width:100%;min-height:76px;border-radius:12px;border:1.5px solid var(--
 <div class="wrap">
   <div class="top">
     <div class="brand">
-      <h1>來福校園陪伴</h1>
+      <h1>Brown校園陪伴</h1>
       <p>校園動物輔導與共情陪伴智慧代理人 · 可點擊原型</p>
     </div>
     <div class="tools">
@@ -267,7 +267,7 @@ var nowL=function(){return '今天 '+nowT()};
 var fmtD=function(d){return (d.getMonth()+1)+'/'+d.getDate()};
 var _id=0;var uid=function(){return ++_id};
 
-/* ---------- 來福(原創 Q 版校犬) ---------- */
+/* ---------- Brown(原創 Q 版校犬) ---------- */
 function dog(mood){
   var eyes=mood==='calm'
     ?'<path d="M39 63q7 6 14 0M67 63q7 6 14 0" class="stroke"/>'
@@ -278,7 +278,7 @@ function dog(mood){
     :mood==='listen'
     ?'<path d="M60 76v3M60 79q-4 3-8 1M60 79q4 3 8 1" class="stroke"/>'
     :'<path d="M60 76v3M60 79q-5 4-10 1M60 79q5 4 10 1" class="stroke"/>';
-  return '<svg class="dog dog-'+mood+'" viewBox="0 0 120 124" role="img" aria-label="來福">'+
+  return '<svg class="dog dog-'+mood+'" viewBox="0 0 120 124" role="img" aria-label="Brown">'+
    '<ellipse cx="60" cy="112" rx="30" ry="18" class="fur"/>'+
    '<path d="M38 100q22 12 44 0" class="collar"/><circle cx="60" cy="109" r="4.5" class="dtag"/>'+
    '<ellipse cx="22" cy="46" rx="13" ry="25" transform="rotate(16 22 46)" class="ear"/>'+
@@ -339,7 +339,7 @@ function initState(){
   var today=new Date(),moods=[3,3,2,2,2,1,2],notes={1:'段考週,睡得很少',3:'和朋友吵架',6:'好累'},diary=[];
   for(var i=7;i>=1;i--){var d=new Date(today);d.setDate(d.getDate()-i);diary.push({d:fmtD(d),mood:moods[7-i],note:notes[7-i]||'',ex:true})}
   S={role:null,introStep:0,introDone:false,tab:'chat',dogMood:'happy',typing:false,
-   chat:[{from:'dog',id:uid(),mood:'happy',html:'嗨!今天過得怎麼樣?想說什麼都可以,我在這裡。<br>不確定從哪裡開始的話,可以點下面的示範劇本。'}],
+   chat:[{from:'dog',id:uid(),mood:'happy',html:'Hi!今天過得怎麼樣?想說什麼都可以,我在這裡。<br>不確定從哪裡開始的話,可以點下面的示範劇本。'}],
    lastDetect:null,shareDiary:false,shareTrend:false,diary:diary,diaryMood:null,diaryNote:'',
    book:{slot:null,topics:[],done:false,urgent:false},access:[],alerts:seedAlerts(),filter:'all',
    sheet:null,teacherOnline:S?S.teacherOnline:true,confirmDel:false,toast:null,consentL2:false};
@@ -376,14 +376,14 @@ function chart(entries){
 /* ---------- 畫面:身分、初次說明 ---------- */
 function roleScreen(){
   return '<div class="screen"><div class="stack">'+
-   '<div class="role-hero"><div class="big">'+dog('happy')+'</div><h2>嗨,我是來福</h2><p class="muted">請先選擇你的身分</p></div>'+
+   '<div class="role-hero"><div class="big">'+dog('happy')+'</div><h2>Hi, 我是Brown</h2><p class="muted">請先選擇你的身分</p></div>'+
    '<button class="role-card" data-act="role" data-role="student"><b>國中生</b><span>想找個地方說說心事</span></button>'+
    '<button class="role-card" data-act="role" data-role="teacher"><b>輔導老師</b><span>查看需要關心的提醒</span></button>'+
    '<button class="role-card" data-act="role" data-role="parent"><b>家長</b><span>了解使用狀況與隱私邊界</span></button>'+
    '<p class="muted" style="text-align:center">原型示範:對話為預設劇本,資料皆為虛構</p></div></div>';
 }
 var INTRO=[
- {m:'happy',t:'嗨,我是來福',d:'我是學校的 AI 陪伴夥伴。考試、朋友、心情,想說什麼都可以,我不會評價你。'},
+ {m:'happy',t:'Hi, 我是Brown',d:'我是學校的 AI 陪伴夥伴。考試、朋友、心情,想說什麼都可以,我不會評價你。'},
  {m:'listen',t:'你說的話,先由你決定',d:'對話原文只有你看得到,也可以隨時刪除。輔導老師只會看到你同意分享的內容,家長看不到對話和日記。'},
  {m:'soft',t:'有三種情況例外',d:'如果你提到想傷害自己、傷害別人,或是被別人傷害,我需要讓輔導人員知道,依法也必須通報。我先告訴你,不會偷偷做。'},
  {m:'happy',t:'準備好就開始',d:'我是陪伴夥伴,不是醫生,也不會取代真人老師。需要的時候,隨時可以預約輔導老師。'}
@@ -426,8 +426,8 @@ function msgHtml(m){
 }
 function chatScreen(){
   var chips=[['exam','考試很緊張'],['sleep','連續睡不好'],['help','覺得自己沒用'],['crisis','危機訊息(示範)']];
-  return '<div class="screen flush"><div class="dogbar"><div class="dwrap">'+dog(S.dogMood)+'</div><div><b>來福</b><span>'+CAPTION[S.dogMood]+'</span></div></div>'+
-   '<div class="msgs" id="msgs" role="log" aria-live="polite">'+S.chat.map(msgHtml).join('')+(S.typing?'<div class="typing" aria-label="來福正在輸入"><i></i><i></i><i></i></div>':'')+'</div>'+
+  return '<div class="screen flush"><div class="dogbar"><div class="dwrap">'+dog(S.dogMood)+'</div><div><b>Brown</b><span>'+CAPTION[S.dogMood]+'</span></div></div>'+
+   '<div class="msgs" id="msgs" role="log" aria-live="polite">'+S.chat.map(msgHtml).join('')+(S.typing?'<div class="typing" aria-label="Brown正在輸入"><i></i><i></i><i></i></div>':'')+'</div>'+
    '<div class="try"><span>示範劇本,點一下會送出一段話</span><div class="chips">'+chips.map(function(c){return '<button class="chip" data-act="script" data-k="'+c[0]+'">'+c[1]+'</button>'}).join('')+'</div></div>'+
    '<form class="composer" id="composer"><button type="button" class="mic" data-act="mic" aria-label="語音"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>'+
    '<input id="chatInput" type="text" maxlength="200" autocomplete="off" placeholder="想說什麼都可以" aria-label="輸入訊息"><button class="btn" type="submit">送出</button></form></div>';
@@ -450,7 +450,7 @@ var SLOTS=[['盡快','今天有空檔就安排'],['週一 午休','12:20–12:50
 var TOPICS=['考試壓力','朋友相處','睡不好','不想說'];
 function bookScreen(){
   var b=S.book;
-  if(b.done)return '<div class="screen"><div class="ok"><div class="big">'+dog('happy')+'</div><h2>已送出預約</h2><p>輔導室會收到你選的時段'+(b.topics.length?'和想聊的方向':'')+',不會看到你跟來福說的話。</p><p class="muted">這是原型示範,沒有真的送出。</p><button class="btn block" data-act="book-reset">再預約一次</button><button class="btn soft block" data-act="tab" data-t="chat">回到來福</button></div></div>';
+  if(b.done)return '<div class="screen"><div class="ok"><div class="big">'+dog('happy')+'</div><h2>已送出預約</h2><p>輔導室會收到你選的時段'+(b.topics.length?'和想聊的方向':'')+',不會看到你跟Brown說的話。</p><p class="muted">這是原型示範,沒有真的送出。</p><button class="btn block" data-act="book-reset">再預約一次</button><button class="btn soft block" data-act="tab" data-t="chat">回到Brown</button></div></div>';
   return '<div class="screen"><div class="stack"><div><h2>預約輔導老師</h2><p class="muted">不用說明原因,你不想說的,老師不會問。</p></div>'+
    (b.urgent?'<div class="notice" style="background:var(--crit-soft);color:var(--on-crit)">想儘快見到老師的話,選「盡快」,或直接走到輔導室找老師。</div>':'')+
    '<div class="stack" style="gap:8px" role="group" aria-label="選擇時段">'+SLOTS.map(function(s,i){return '<button class="slot" data-act="slot" data-i="'+i+'" aria-pressed="'+(b.slot===i)+'"><span class="rd"></span><span><b>'+s[0]+'</b><small>'+s[1]+(i===0&&!S.teacherOnline?' · 老師目前不在線,上班時會看到':'')+'</small></span></button>'}).join('')+'</div>'+
@@ -471,7 +471,7 @@ function privacyScreen(){
   return '<div class="screen"><div class="stack"><div><h2>誰能看到什麼</h2><p class="muted">保密有例外,而且事先告訴你。</p></div>'+
    '<div class="card">'+sw('shareDiary',S.shareDiary,'心情日記給輔導老師看','預設關閉')+sw('shareTrend',S.shareTrend,'情緒趨勢摘要給輔導老師看','只有曲線,沒有對話內容')+'</div>'+
    matrixHtml()+
-   '<div class="card"><h3>例外情況</h3><p>只有提到想傷害自己、傷害別人,或是被別人傷害,依法需要通報時,輔導人員才會收到通知。家長同意你使用來福,不等於同意看你的對話或日記。</p></div>'+
+   '<div class="card"><h3>例外情況</h3><p>只有提到想傷害自己、傷害別人,或是被別人傷害,依法需要通報時,輔導人員才會收到通知。家長同意你使用Brown,不等於同意看你的對話或日記。</p></div>'+
    '<div class="card"><h3>誰調閱過我的資料</h3><div class="log">'+(S.access.length?S.access.map(function(a){return '<div><b>'+a.t+'</b> · '+a.text+'</div>'}).join(''):'<span class="muted">目前沒有任何人調閱你的資料。</span>')+'</div></div>'+
    '<div class="card"><h3>對話原文</h3>'+(S.confirmDel
      ?'<p>刪除後無法復原,確定要刪除嗎?</p><div class="chips" style="margin-top:8px"><button class="btn small" data-act="del-yes">確定刪除</button><button class="btn line small" data-act="del-no">先不要</button></div>'
@@ -503,7 +503,7 @@ function alertSheetHtml(id){
 function parentScreen(){
   var days=['一','二','三','四','五','六','日'],cnt=[1,2,0,3,1,0,1],max=3;
   return '<div class="screen"><div class="stack"><div><h2>家長專區</h2><p class="muted">在孩子敢開口和您想放心之間,我們先把界線說清楚。</p></div>'+
-   '<div class="card"><h3>同意狀態</h3><p>您已同意孩子使用來福。同意使用,不包含查看對話或日記,孩子需要另外授權才會分享給輔導老師。</p></div>'+
+   '<div class="card"><h3>同意狀態</h3><p>您已同意孩子使用Brown。同意使用,不包含查看對話或日記,孩子需要另外授權才會分享給輔導老師。</p></div>'+
    '<div class="card"><h3>本週使用頻率(示範資料)</h3><div class="bars">'+cnt.map(function(c,i){return '<div><i class="'+(c?'':'zero')+'" style="height:'+(c?Math.round(c/max*80)+10:6)+'px"></i>'+days[i]+'</div>'}).join('')+'</div><p class="muted" style="margin-top:8px">只顯示使用次數,不顯示任何對話內容。</p></div>'+
    '<div class="card"><h3>您看不到什麼</h3><ul><li>對話原文與心情日記</li><li>孩子授權給輔導老師的趨勢摘要</li></ul><p class="muted" style="margin-top:6px">因為孩子知道不會被看見,才敢說真話。</p></div>'+
    '<div class="card"><h3>發生立即危機時</h3><p>輔導老師會依輔導判斷、依法通知您。這個例外在孩子第一次使用時就已經告訴他。</p></div>'+
@@ -524,7 +524,7 @@ function phoneHtml(){
   else if(S.role==='student'&&!S.introDone)inner=introScreen();
   else if(S.role==='student'){
     var body={chat:chatScreen,diary:diaryScreen,book:bookScreen,privacy:privacyScreen}[S.tab]();
-    inner=shell('來福','校園陪伴夥伴',body,studentNav());
+    inner=shell('Brown','校園陪伴夥伴',body,studentNav());
   }
   else if(S.role==='teacher')inner=shell('輔導前哨站','輔導室專用 · 示範資料',teacherScreen(),'');
   else inner=shell('家長專區','了解與安心','' +parentScreen(),'');
@@ -620,7 +620,7 @@ function breathStart(){
     left--;
     if(left===0){
       if(phase==='in'){phase='out';left=6;apply();return}
-      if(round===3){breathStop();t.textContent='做得很好';s.textContent='感覺有沒有輕鬆一點?';b.hidden=false;b.textContent='回到來福';b.setAttribute('data-act','breath-done');return}
+      if(round===3){breathStop();t.textContent='做得很好';s.textContent='感覺有沒有輕鬆一點?';b.hidden=false;b.textContent='回到Brown';b.setAttribute('data-act','breath-done');return}
       round++;phase='in';left=4;apply();return;
     }
     t.textContent=(phase==='in'?'慢慢吸氣 ':'慢慢吐氣 ')+left;
