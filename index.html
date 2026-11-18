@@ -1,0 +1,675 @@
+<title>來福校園陪伴</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: 一支手機畫面(左)配一欄示範資訊(右);窄螢幕時上下堆疊。 */
+:root{
+  --bg:#E7F0ED; --surface:#FFFFFF; --surface-2:#F1F7F5; --ink:#1F2D2A; --ink-2:#4B5F5A; --line:#D2E0DB;
+  --primary:#22756B; --on-primary:#FFFFFF; --primary-soft:#D5EBE6; --on-soft:#12453F;
+  --amber-soft:#FCEBC8; --on-amber:#4A3208;
+  --orange-soft:#FFE0C7; --on-orange:#6B3410;
+  --crit:#B3382F; --crit-soft:#FADDDA; --on-crit:#6E1D17;
+  --fur:#E9A94F; --ear:#C47D2F; --muzzle:#FCE5C0; --blaze:#FFF4DE; --nose:#3A2A1E; --blush:#F4A394; --tongue:#EE7C88; --collar:#22756B; --tag:#F6D14C;
+  --shadow:0 12px 32px rgba(25,50,45,.14);
+  --font-body:'Noto Sans TC',system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif;
+  --font-num:'Fredoka','Noto Sans TC',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1816; --surface:#17231F; --surface-2:#1E2D29; --ink:#E7F1EE; --ink-2:#A3B8B2; --line:#2B3C37;
+  --primary:#63C7B8; --on-primary:#0B2622; --primary-soft:#1F3B36; --on-soft:#BFEBE3;
+  --amber-soft:#3D2F14; --on-amber:#F6D9A0; --orange-soft:#44301C; --on-orange:#F6CFAA;
+  --crit:#FF8E84; --crit-soft:#4A2320; --on-crit:#FFCBC6;
+  --fur:#D99A45; --ear:#A9692A; --muzzle:#F2D6AC; --blaze:#FFF0D4; --collar:#63C7B8;
+  --shadow:0 12px 32px rgba(0,0,0,.4); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1816; --surface:#17231F; --surface-2:#1E2D29; --ink:#E7F1EE; --ink-2:#A3B8B2; --line:#2B3C37;
+  --primary:#63C7B8; --on-primary:#0B2622; --primary-soft:#1F3B36; --on-soft:#BFEBE3;
+  --amber-soft:#3D2F14; --on-amber:#F6D9A0; --orange-soft:#44301C; --on-orange:#F6CFAA;
+  --crit:#FF8E84; --crit-soft:#4A2320; --on-crit:#FFCBC6;
+  --fur:#D99A45; --ear:#A9692A; --muzzle:#F2D6AC; --blaze:#FFF0D4; --collar:#63C7B8;
+  --shadow:0 12px 32px rgba(0,0,0,.4); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.6;
+  padding-block:16px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+h1,h2,h3,h4,p,ul,dl{margin:0}
+ul{padding-left:1.1em}
+.muted{color:var(--ink-2);font-size:13px}
+.wrap{max-width:1040px;margin:0 auto}
+
+/* 上方示範控制 */
+.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.brand h1{font-size:20px;line-height:1.3}
+.brand p{font-size:13px;color:var(--ink-2)}
+.tools{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.seg{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{min-height:36px;padding:0 14px;border-radius:999px;font-size:14px;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--primary);color:var(--on-primary);font-weight:700}
+.swline{display:flex;align-items:center;gap:8px;font-size:14px}
+.switch{width:46px;height:28px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background .15s}
+.switch i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s}
+.switch[aria-checked="true"]{background:var(--primary)}
+.switch[aria-checked="true"] i{transform:translateX(18px)}
+.btn{min-height:44px;padding:0 18px;border-radius:14px;background:var(--primary);color:var(--on-primary);font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.soft{background:var(--primary-soft);color:var(--on-soft)}
+.btn.line{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn.block{width:100%}
+.btn.small{min-height:36px;padding:0 12px;font-size:14px;border-radius:10px}
+.ghost{color:var(--primary);font-weight:500;min-height:36px;padding:0 8px}
+
+/* 舞台 */
+.stage{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:28px;align-items:start;justify-content:center}
+@media (max-width:860px){.stage{grid-template-columns:minmax(0,1fr)}}
+.phone{position:relative;width:100%;max-width:420px;margin-inline:auto;height:clamp(600px,calc(100dvh - 130px),820px);
+  background:var(--surface);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+.side{display:grid;gap:16px;min-width:0;width:100%;max-width:560px;margin-inline:auto}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
+.panel h3{font-size:16px;margin-bottom:10px}
+.panel h4{font-size:13px;margin:14px 0 6px;color:var(--ink-2);letter-spacing:.04em}
+.panel ul{display:grid;gap:4px;font-size:14px}
+.kv{display:grid;grid-template-columns:5.5em 1fr;gap:6px 10px;font-size:14px}
+.kv dt{color:var(--ink-2)}
+.kv dd{margin:0}
+
+/* 手機內部 */
+.app-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px 10px 16px;border-bottom:1px solid var(--line);flex:none}
+.who{display:flex;align-items:center;gap:10px;min-width:0}
+.who .av{width:36px;height:36px;flex:none}
+.who b{display:block;font-size:15px;line-height:1.2}
+.who span{font-size:12px;color:var(--ink-2)}
+.screen{flex:1;overflow-y:auto;padding:16px;min-height:0}
+.screen.flush{padding:0;overflow:hidden;display:flex;flex-direction:column}
+.screen h2{font-size:20px;margin-bottom:4px}
+.stack{display:grid;gap:14px}
+.card{background:var(--surface-2);border:1px solid var(--line);border-radius:16px;padding:14px}
+.card h3{font-size:15px;margin-bottom:8px}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:var(--surface);flex:none}
+.nav button{display:grid;justify-items:center;gap:2px;padding:8px 0 10px;font-size:12px;color:var(--ink-2);min-height:56px}
+.nav button[aria-current="page"]{color:var(--primary);font-weight:700}
+.nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* 來福 */
+.dog{display:block;width:100%;height:100%;overflow:visible}
+.dog .fur{fill:var(--fur)} .dog .ear{fill:var(--ear)} .dog .muzzle{fill:var(--muzzle)} .dog .blaze{fill:var(--blaze)}
+.dog .nose{fill:var(--nose)} .dog .blush{fill:var(--blush);opacity:.7} .dog .tongue{fill:var(--tongue)}
+.dog .collar{fill:none;stroke:var(--collar);stroke-width:7;stroke-linecap:round} .dog .dtag{fill:var(--tag)}
+.dog .ink{fill:#2B2220} .dog .stroke{fill:none;stroke:#2B2220;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.dog-listen{transform:rotate(-5deg);transform-origin:50% 90%}
+.role-hero{display:grid;justify-items:center;gap:6px;text-align:center;padding:10px 0 4px}
+.role-hero .big{width:120px;height:124px}
+.role-hero h2{font-size:24px}
+.role-card{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;text-align:left;width:100%;padding:14px 16px;border:1.5px solid var(--line);border-radius:16px;background:var(--surface-2);min-height:64px}
+.role-card:hover{border-color:var(--primary)}
+.role-card b{font-size:16px}
+.role-card span{font-size:13px;color:var(--ink-2);grid-column:1}
+.role-card::after{content:"›";grid-row:1/3;grid-column:2;font-size:24px;color:var(--primary)}
+.intro{display:grid;gap:14px;justify-items:center;text-align:center;padding:12px 4px}
+.intro .big{width:150px;height:155px}
+.intro h2{font-size:22px}
+.intro p{max-width:30em;color:var(--ink-2)}
+.dots{display:flex;gap:8px}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--primary);width:22px;border-radius:99px}
+
+/* 聊天 */
+.dogbar{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--primary-soft);flex:none}
+.dogbar .dwrap{width:58px;height:60px;flex:none;animation:bob 3.2s ease-in-out infinite}
+.dogbar b{display:block;color:var(--on-soft)}
+.dogbar span{font-size:13px;color:var(--on-soft);opacity:.85}
+@keyframes bob{50%{transform:translateY(-3px)}}
+.msgs{flex:1;overflow-y:auto;padding:14px 14px 6px;display:grid;align-content:start;gap:12px;min-height:0}
+.row{display:flex;gap:8px;align-items:flex-end}
+.row.user{justify-content:flex-end}
+.row .av{width:32px;height:34px;flex:none;align-self:flex-start}
+.col{display:grid;gap:8px;min-width:0;max-width:calc(100% - 44px)}
+.bub{padding:10px 14px;border-radius:18px;overflow-wrap:anywhere}
+.bub.dog{background:var(--surface-2);border:1px solid var(--line);border-bottom-left-radius:6px}
+.bub.user{background:var(--primary);color:var(--on-primary);border-bottom-right-radius:6px;max-width:82%}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:40px;padding:0 14px;border-radius:999px;background:var(--surface);border:1.5px solid var(--primary);color:var(--primary);font-size:14px;font-weight:500}
+.chip:hover{background:var(--primary-soft)}
+.chip.on{background:var(--primary);color:var(--on-primary)}
+.xai-btn{justify-self:start;min-height:32px;font-size:13px;color:var(--ink-2);text-decoration:underline;text-underline-offset:3px}
+.xai{background:var(--surface);border:1px dashed var(--primary);border-radius:14px;padding:12px;font-size:14px;display:grid;gap:8px}
+.xai small{color:var(--ink-2)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;background:var(--surface-2);border:1px solid var(--line)}
+.tag.ty{background:var(--primary-soft);color:var(--on-soft);border-color:transparent}
+.tag.tn{background:var(--surface-2);color:var(--ink-2)}
+.tag.tc{background:var(--amber-soft);color:var(--on-amber);border-color:transparent}
+.typing{display:flex;gap:5px;padding:14px 16px;background:var(--surface-2);border:1px solid var(--line);border-radius:18px;width:max-content}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--ink-2);animation:dot 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes dot{50%{transform:translateY(-4px);opacity:.4}}
+.try{padding:6px 14px 8px;display:grid;gap:4px;flex:none}
+.try>span{font-size:12px;color:var(--ink-2)}
+.try .chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
+.try .chip{flex:none;border-style:dashed;white-space:nowrap}
+.composer{display:flex;gap:8px;padding:8px 12px 12px;border-top:1px solid var(--line);flex:none}
+.composer input{flex:1;min-width:0;min-height:44px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:0 14px;font:inherit}
+.composer .mic{width:44px;height:44px;border-radius:14px;border:1.5px solid var(--line);display:grid;place-items:center;flex:none;color:var(--ink-2)}
+.composer .mic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.crisis{background:var(--crit-soft);color:var(--on-crit);border:1.5px solid var(--crit);border-radius:16px;padding:14px;display:grid;gap:10px}
+.crisis h3{font-size:17px}
+.hot{display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:center;background:var(--surface);color:var(--ink);border-radius:12px;padding:8px 12px}
+.hot b{font-family:var(--font-num);font-size:22px;letter-spacing:.02em}
+.hot small{grid-column:1;color:var(--ink-2)}
+.hot button{grid-row:1/3;grid-column:2;min-height:36px;padding:0 10px;border-radius:10px;border:1.5px solid var(--line);font-size:13px}
+.notice{background:var(--surface);color:var(--ink);border-radius:12px;padding:10px 12px;font-size:14px}
+
+/* 日記 */
+.moods{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.moods button{display:grid;justify-items:center;gap:2px;padding:8px 0;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-size:12px;color:var(--ink-2);min-height:64px}
+.moods button[aria-pressed="true"]{border-color:var(--primary);background:var(--primary-soft);color:var(--on-soft);font-weight:700}
+.moods svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+textarea{width:100%;min-height:76px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 12px;font:inherit;resize:vertical}
+.chart{width:100%;height:auto;display:block}
+.chart text{fill:var(--ink-2);font-size:10px;font-family:var(--font-body)}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .ln{fill:none;stroke:var(--primary);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.chart .pt{fill:var(--surface);stroke:var(--primary);stroke-width:2}
+.chart .pt.last{fill:var(--primary)}
+.entry{display:grid;grid-template-columns:3.2em 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.entry:first-of-type{border-top:0}
+.entry time{font-family:var(--font-num);color:var(--ink-2)}
+.swrow2{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
+.swrow2 small{display:block;color:var(--ink-2);font-size:13px}
+
+/* 預約 */
+.slot{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);min-height:54px}
+.slot[aria-pressed="true"]{border-color:var(--primary);background:var(--primary-soft)}
+.slot .rd{width:18px;height:18px;border-radius:50%;border:2px solid var(--ink-2);flex:none}
+.slot[aria-pressed="true"] .rd{border-color:var(--primary);background:radial-gradient(var(--primary) 45%,transparent 50%)}
+.slot small{display:block;color:var(--ink-2)}
+.ok{display:grid;gap:12px;justify-items:center;text-align:center;padding:20px 8px}
+.ok .big{width:110px;height:114px}
+
+/* 隱私 */
+.mx{background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:12px}
+.mx h4{font-size:14px;margin-bottom:6px}
+.mxr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 0;font-size:14px}
+.mxr>span:first-child{color:var(--ink-2);flex:none}
+.mxr .tag{text-align:right;border-radius:10px}
+.log{font-size:14px;display:grid;gap:6px}
+
+/* 老師、家長 */
+.pill{display:inline-flex;align-items:center;padding:1px 10px;border-radius:999px;font-family:var(--font-num);font-weight:600;font-size:13px}
+.pill.lv0{background:var(--primary-soft);color:var(--on-soft)}
+.pill.lv1{background:var(--amber-soft);color:var(--on-amber)}
+.pill.lv2{background:var(--orange-soft);color:var(--on-orange)}
+.pill.lv3{background:var(--crit-soft);color:var(--on-crit);border:1px solid var(--crit)}
+.pill.lvB{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line);font-family:var(--font-body)}
+.alert{display:grid;gap:4px;text-align:left;width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface-2)}
+.alert.l3{border-color:var(--crit);background:var(--crit-soft);color:var(--on-crit)}
+.alert .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px}
+.alert .meta b{font-family:var(--font-num)}
+.alert .state{margin-left:auto;font-size:12px}
+.spark{width:100%;max-width:240px;height:auto;display:block}
+.spark .ln{fill:none;stroke:var(--primary);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.spark circle{fill:var(--primary)}
+.bars{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:110px}
+.bars div{display:grid;gap:4px;justify-items:center;align-items:end;height:100%;font-size:12px;color:var(--ink-2)}
+.bars i{display:block;width:100%;max-width:26px;border-radius:8px 8px 4px 4px;background:var(--primary)}
+.bars i.zero{background:var(--line)}
+
+/* 覆蓋層 */
+.sheet-wrap{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;z-index:5}
+.scrim{position:absolute;inset:0;background:rgba(8,20,17,.5);cursor:default}
+.sheet{position:relative;background:var(--surface);border-radius:22px 22px 0 0;padding:16px 16px 20px;max-height:88%;overflow-y:auto;display:grid;gap:14px;animation:up .22s ease-out}
+@keyframes up{from{transform:translateY(24px);opacity:.4}}
+.sheet-head{display:flex;justify-content:space-between;align-items:center}
+.sheet-head b{font-size:17px}
+.breath{display:grid;justify-items:center;gap:12px;text-align:center;padding:6px 0}
+.bcircle{width:150px;height:150px;border-radius:50%;background:var(--primary-soft);border:2px solid var(--primary);padding:30px 34px 24px;transition-property:transform;transition-timing-function:ease-in-out}
+.btext{font-size:20px;font-weight:700;min-height:1.6em}
+.toast{position:absolute;left:16px;right:16px;bottom:78px;background:var(--ink);color:var(--surface);padding:10px 14px;border-radius:12px;font-size:14px;text-align:center;z-index:9}
+
+@media (prefers-reduced-motion:reduce){
+  .dogbar .dwrap,.typing i,.sheet{animation:none}
+  .bcircle,.switch,.switch i{transition:none}
+}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <h1>來福校園陪伴</h1>
+      <p>校園動物輔導與共情陪伴智慧代理人 · 可點擊原型</p>
+    </div>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="切換身分">
+        <button data-act="role-jump" data-role="student" aria-pressed="false">學生</button>
+        <button data-act="role-jump" data-role="teacher" aria-pressed="false">輔導老師</button>
+        <button data-act="role-jump" data-role="parent" aria-pressed="false">家長</button>
+      </div>
+      <div class="swline"><span>輔導老師在線</span>
+        <button class="switch" role="switch" aria-checked="true" aria-label="輔導老師在線" data-act="toggle" data-k="teacherOnline"><i></i></button></div>
+      <button class="btn line small" data-act="reset">重設原型</button>
+    </div>
+  </div>
+  <div class="stage">
+    <div class="phone" id="phone"></div>
+    <div class="side" id="info"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)};
+var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var pad=function(n){return n<10?'0'+n:''+n};
+var nowT=function(){var d=new Date();return pad(d.getHours())+':'+pad(d.getMinutes())};
+var nowL=function(){return '今天 '+nowT()};
+var fmtD=function(d){return (d.getMonth()+1)+'/'+d.getDate()};
+var _id=0;var uid=function(){return ++_id};
+
+/* ---------- 來福(原創 Q 版校犬) ---------- */
+function dog(mood){
+  var eyes=mood==='calm'
+    ?'<path d="M39 63q7 6 14 0M67 63q7 6 14 0" class="stroke"/>'
+    :'<circle cx="46" cy="63" r="5.5" class="ink"/><circle cx="74" cy="63" r="5.5" class="ink"/><circle cx="48" cy="61" r="1.8" fill="#fff"/><circle cx="76" cy="61" r="1.8" fill="#fff"/>';
+  var brows=mood==='soft'?'<path d="M38 52l13-4M82 52l-13-4" class="stroke"/>':'';
+  var mouth=mood==='happy'
+    ?'<path d="M60 76v3M60 79q-6 6-11 1M60 79q6 6 11 1" class="stroke"/><path d="M55 83q5 9 10 0z" class="tongue"/>'
+    :mood==='listen'
+    ?'<path d="M60 76v3M60 79q-4 3-8 1M60 79q4 3 8 1" class="stroke"/>'
+    :'<path d="M60 76v3M60 79q-5 4-10 1M60 79q5 4 10 1" class="stroke"/>';
+  return '<svg class="dog dog-'+mood+'" viewBox="0 0 120 124" role="img" aria-label="來福">'+
+   '<ellipse cx="60" cy="112" rx="30" ry="18" class="fur"/>'+
+   '<path d="M38 100q22 12 44 0" class="collar"/><circle cx="60" cy="109" r="4.5" class="dtag"/>'+
+   '<ellipse cx="22" cy="46" rx="13" ry="25" transform="rotate(16 22 46)" class="ear"/>'+
+   '<ellipse cx="98" cy="46" rx="13" ry="25" transform="rotate(-16 98 46)" class="ear"/>'+
+   '<ellipse cx="60" cy="62" rx="41" ry="37" class="fur"/>'+
+   '<path d="M60 26c-9 8-9 18 0 24c9-6 9-16 0-24z" class="blaze"/>'+
+   '<ellipse cx="60" cy="78" rx="19" ry="14" class="muzzle"/>'+
+   '<circle cx="34" cy="75" r="5" class="blush"/><circle cx="86" cy="75" r="5" class="blush"/>'+
+   eyes+brows+'<ellipse cx="60" cy="71" rx="6.5" ry="4.8" class="nose"/>'+mouth+'</svg>';
+}
+var CAPTION={happy:'我在這裡',listen:'我在聽你說',soft:'我陪著你',calm:'跟我一起慢慢呼吸'};
+
+/* ---------- 劇本與等級(對應報告表 2) ---------- */
+var LV={
+ 0:{n:'L0 一般壓力',ai:'傾聽、同理、正念引導',staff:'無',data:'無'},
+ 1:{n:'L1 持續低落',ai:'溫和詢問,並提示可找輔導老師',staff:'無,但學生可一鍵預約',data:'趨勢摘要需學生授權'},
+ 2:{n:'L2 高關懷',ai:'提高陪伴頻率,說明可用資源,詢問是否願意讓老師知道',staff:'輔導老師收到去識別化提醒,儘快接觸',data:'先徵詢學生,並告知理由'},
+ 3:{n:'L3 立即危機',ai:'溫和中斷一般對話,提供求助資源與緊急聯絡方式',staff:'即時通知輔導人員與校安機制',data:'依法通報,且事前已告知例外'}
+};
+var SCR={
+ exam:{level:0,userText:'明天要段考,我很緊張,一直怕自己考不好。',
+  signals:['提到「段考」','提到「緊張」「怕考不好」','語氣屬於焦慮,可用練習調節','沒有持續低落或自傷訊號'],
+  reply:{mood:'listen',html:'聽起來你很認真在準備,才會這麼緊張。謝謝你告訴我。<br>要不要跟我做三輪慢慢的呼吸?做完再決定要不要繼續聊。',
+   actions:[{d:'breath',l:'開始呼吸練習'},{d:'more',l:'我想繼續說'}],
+   why:'你提到「段考」和「怕考不好」,這是考試壓力。這類情況我先陪你聊、帶你做放鬆練習,不會通知任何人。'}},
+ sleep:{level:1,userText:'我已經連續三天睡不好,白天一直很累,什麼都不想做。',
+  signals:['提到「連續三天」','提到「睡不好」「很累」','持續時間:多日','動力下降:「什麼都不想做」'],
+  reply:{mood:'soft',html:'連續幾天睡不好又很累,身體和心情都會很辛苦。我在這裡聽你說。<br>如果你想,輔導室的老師也可以陪你一起想辦法。要不要預約都由你決定,不用說明原因。',
+   actions:[{d:'book',l:'預約輔導老師'},{d:'breath',l:'先做放鬆練習'},{d:'more',l:'再聊聊'}],
+   why:'你提到「連續三天」「睡不好」「很累」,已經超過一般的考試壓力。我提醒你有人可以幫忙,但要不要找老師由你決定。老師不會因此收到你的對話內容。'}},
+ help:{level:2,userText:'我覺得自己很沒用,做什麼都做不好,好像沒有人會在意。',
+  signals:['自我否定:「很沒用」','無助感:「沒有人會在意」','近幾天心情紀錄偏低','沒有明確的自傷表述'],
+  reply:{mood:'soft',html:'謝謝你願意說出來,這些感覺很沉重,你不用一個人撐著。<br>我想問你一件事:你願意讓輔導老師知道你最近很辛苦嗎?老師只會收到一則「這位同學最近需要關心」的提醒,看不到你跟我說的內容。<br>你可以選擇不要,我還是會在這裡。',
+   actions:[{d:'yes',l:'願意,請老師關心我'},{d:'no',l:'先不要'},{d:'info',l:'老師會看到什麼?'}],
+   why:'你說了「很沒用」「沒有人會在意」,而且最近幾天的心情紀錄一直偏低。我想多陪你,也先問你願不願意讓老師知道,不會沒問就通知。'}},
+ crisis:{level:3,userText:'我不想再撐了,我想傷害自己。',
+  signals:['明確表述想傷害自己','語意訊號達到立即危機門檻','依事前說明:提供求助資源並通知輔導人員']},
+ generic:{level:0,userText:null,signals:['沒有偵測到明顯的壓力或風險用詞'],
+  reply:{mood:'listen',html:'謝謝你告訴我。可以再多說一點嗎?想從哪裡開始都可以,我會慢慢聽。',
+   why:'我還不太確定你現在的狀況,所以先請你多說一些,不會急著下結論。'}}
+};
+function detect(t){
+  if(/傷害自己|不想活|想死|自殺|消失|結束生命/.test(t))return 'crisis';
+  if(/沒用|沒有人在意|沒人在意|放棄|無助|討厭自己/.test(t))return 'help';
+  if(/睡不著|失眠|睡不好|連續|好累|沒力氣/.test(t))return 'sleep';
+  if(/考試|段考|緊張|焦慮|壓力|煩/.test(t))return 'exam';
+  return 'generic';
+}
+
+/* ---------- 狀態 ---------- */
+var S,tt=null,bTimer=null,lastSig='';
+function seedAlerts(){return[
+ {id:uid(),lv:2,kind:'alert',code:'B-0312',time:'今天 09:40',headline:'連續 5 天情緒低落,夜間使用增加',consent:'學生同意後送出的提醒',trend:[3,3,2,2,2,1,2],factors:['升學壓力','同儕關係'],tip:'先用輕鬆的話題開場,讓學生決定要談多少。',state:'未接觸'},
+ {id:uid(),lv:1,kind:'alert',code:'B-0127',time:'昨天 20:15',headline:'睡眠問題,學生自己預約了週二午休',consent:'學生主動預約',trend:[4,3,3,3,2,3,3],factors:['睡眠'],tip:'面談前不需要先問原因。',state:'已預約'},
+ {id:uid(),lv:1,kind:'alert',code:'B-0198',time:'昨天 16:02',headline:'持續低落,學生授權了趨勢摘要',consent:'學生已授權趨勢摘要',trend:[3,3,3,2,3,2,2],factors:['課業'],tip:'可以先確認學生是否想多聊一點,再安排時間。',state:'未接觸'}
+]}
+function initState(){
+  var today=new Date(),moods=[3,3,2,2,2,1,2],notes={1:'段考週,睡得很少',3:'和朋友吵架',6:'好累'},diary=[];
+  for(var i=7;i>=1;i--){var d=new Date(today);d.setDate(d.getDate()-i);diary.push({d:fmtD(d),mood:moods[7-i],note:notes[7-i]||'',ex:true})}
+  S={role:null,introStep:0,introDone:false,tab:'chat',dogMood:'happy',typing:false,
+   chat:[{from:'dog',id:uid(),mood:'happy',html:'嗨!今天過得怎麼樣?想說什麼都可以,我在這裡。<br>不確定從哪裡開始的話,可以點下面的示範劇本。'}],
+   lastDetect:null,shareDiary:false,shareTrend:false,diary:diary,diaryMood:null,diaryNote:'',
+   book:{slot:null,topics:[],done:false,urgent:false},access:[],alerts:seedAlerts(),filter:'all',
+   sheet:null,teacherOnline:S?S.teacherOnline:true,confirmDel:false,toast:null,consentL2:false};
+}
+
+/* ---------- 小元件 ---------- */
+var ICON={
+ chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+ diary:'<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM9 9h6M9 13h6"/>',
+ book:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',
+ shield:'<path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/>'
+};
+var FACE={1:'M8 17q4-6 8 0',2:'M8 16q4-3 8 0',3:'M8 15.5h8',4:'M8 14.5q4 3 8 0',5:'M8 13.5q4 6 8 0'};
+function face(m){return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="9" cy="10" r=".8" fill="currentColor"/><circle cx="15" cy="10" r=".8" fill="currentColor"/><path d="'+FACE[m]+'"/></svg>'}
+var MOODN={1:'很低落',2:'有點低',3:'普通',4:'不錯',5:'很好'};
+function sw(k,on,label,desc){return '<div class="swrow2"><div><b>'+label+'</b><small>'+desc+'</small></div><button class="switch" role="switch" aria-checked="'+on+'" aria-label="'+label+'" data-act="toggle" data-k="'+k+'"><i></i></button></div>'}
+function spark(a){
+  var w=240,h=56,p=8,n=a.length;
+  var pts=a.map(function(v,i){return [p+i*(w-2*p)/(n-1),h-p-(v-1)*(h-2*p)/4]});
+  var last=pts[n-1];
+  return '<svg class="spark" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="近 7 日心情趨勢"><path class="ln" d="'+pts.map(function(q,i){return (i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1)}).join('')+'"/><circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="4"/></svg>';
+}
+function chart(entries){
+  var W=320,H=150,L=44,R=12,T=12,B=26,n=entries.length;
+  var x=function(i){return n<2?L:L+i*(W-L-R)/(n-1)};
+  var y=function(v){return T+(5-v)*(H-T-B)/4};
+  var g='';[[5,'很好'],[3,'普通'],[1,'低落']].forEach(function(t){g+='<line class="grid" x1="'+L+'" x2="'+(W-R)+'" y1="'+y(t[0])+'" y2="'+y(t[0])+'"/><text x="'+(L-6)+'" y="'+(y(t[0])+3)+'" text-anchor="end">'+t[1]+'</text>'});
+  var path=entries.map(function(e,i){return (i?'L':'M')+x(i).toFixed(1)+' '+y(e.mood).toFixed(1)}).join('');
+  var dots=entries.map(function(e,i){return '<circle class="pt'+(i===n-1?' last':'')+'" cx="'+x(i).toFixed(1)+'" cy="'+y(e.mood).toFixed(1)+'" r="'+(i===n-1?5:3.5)+'"/>'}).join('');
+  var lab=entries.map(function(e,i){return '<text x="'+x(i).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle">'+e.d+'</text>'}).join('');
+  return '<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="近 7 筆心情曲線">'+g+'<path class="ln" d="'+path+'"/>'+dots+lab+'</svg>';
+}
+
+/* ---------- 畫面:身分、初次說明 ---------- */
+function roleScreen(){
+  return '<div class="screen"><div class="stack">'+
+   '<div class="role-hero"><div class="big">'+dog('happy')+'</div><h2>嗨,我是來福</h2><p class="muted">請先選擇你的身分</p></div>'+
+   '<button class="role-card" data-act="role" data-role="student"><b>國中生</b><span>想找個地方說說心事</span></button>'+
+   '<button class="role-card" data-act="role" data-role="teacher"><b>輔導老師</b><span>查看需要關心的提醒</span></button>'+
+   '<button class="role-card" data-act="role" data-role="parent"><b>家長</b><span>了解使用狀況與隱私邊界</span></button>'+
+   '<p class="muted" style="text-align:center">原型示範:對話為預設劇本,資料皆為虛構</p></div></div>';
+}
+var INTRO=[
+ {m:'happy',t:'嗨,我是來福',d:'我是學校的 AI 陪伴夥伴。考試、朋友、心情,想說什麼都可以,我不會評價你。'},
+ {m:'listen',t:'你說的話,先由你決定',d:'對話原文只有你看得到,也可以隨時刪除。輔導老師只會看到你同意分享的內容,家長看不到對話和日記。'},
+ {m:'soft',t:'有三種情況例外',d:'如果你提到想傷害自己、傷害別人,或是被別人傷害,我需要讓輔導人員知道,依法也必須通報。我先告訴你,不會偷偷做。'},
+ {m:'happy',t:'準備好就開始',d:'我是陪伴夥伴,不是醫生,也不會取代真人老師。需要的時候,隨時可以預約輔導老師。'}
+];
+function introScreen(){
+  var s=INTRO[S.introStep],last=S.introStep===INTRO.length-1;
+  return '<div class="screen"><div class="intro"><div class="big">'+dog(s.m)+'</div><h2>'+s.t+'</h2><p>'+s.d+'</p>'+
+   '<div class="dots" aria-label="第 '+(S.introStep+1)+' 步,共 '+INTRO.length+' 步">'+INTRO.map(function(_,i){return '<i class="'+(i===S.introStep?'on':'')+'"></i>'}).join('')+'</div>'+
+   '<button class="btn block" data-act="intro-next">'+(last?'開始聊聊':'下一步')+'</button>'+
+   (last?'':'<button class="ghost" data-act="intro-skip">略過</button>')+'</div></div>';
+}
+
+/* ---------- 學生:聊天 ---------- */
+function xaiHtml(m){
+  if(!m.why)return '';
+  var b='<button class="xai-btn" data-act="xai" data-id="'+m.id+'" aria-expanded="'+!!m.xaiOpen+'">為什麼這樣回應?</button>';
+  if(!m.xaiOpen)return b;
+  return b+'<div class="xai"><b>我的依據</b><p>'+m.why+'</p>'+
+   (m.signals?'<div class="tags">'+m.signals.map(function(s){return '<span class="tag">'+s+'</span>'}).join('')+'</div>':'')+
+   '<small>我只負責篩選與銜接,不做診斷,最後的判斷由專業人員負責。</small></div>';
+}
+function actionsHtml(m){
+  if(!m.actions||m.used)return '';
+  return '<div class="chips">'+m.actions.map(function(a){return '<button class="chip" data-act="chat-do" data-id="'+m.id+'" data-d="'+a.d+'">'+a.l+'</button>'}).join('')+'</div>';
+}
+function hot(n,name){return '<div class="hot"><b>'+n+'</b><small>'+name+'</small><button data-act="copy" data-v="'+n+'">複製</button></div>'}
+function crisisHtml(m){
+  var on=S.teacherOnline;
+  return '<div class="crisis"><h3>我先停下來陪你</h3><p>你剛剛說的事很重要。現在最需要的是讓真人陪著你。</p>'+
+   hot('1925','安心專線(24 小時)')+hot('1980','張老師專線')+hot('110 / 119','現在有立即危險時')+
+   '<div class="notice">'+(on
+     ?'輔導老師目前在線上。依照一開始的說明,輔導人員和校安機制已收到通知,會有真人來找你。'
+     :'輔導老師目前不在線上。明天上班時,第一時間會收到通知。現在請先聯絡上面的專線。')+'</div>'+
+   actionsHtml(m)+'</div>';
+}
+function msgHtml(m){
+  if(m.from==='user')return '<div class="row user"><div class="bub user">'+esc(m.text)+'</div></div>';
+  var body=m.kind==='crisis'?crisisHtml(m):'<div class="bub dog">'+m.html+'</div>'+actionsHtml(m);
+  return '<div class="row dog"><div class="av">'+dog(m.mood||'happy')+'</div><div class="col">'+body+xaiHtml(m)+'</div></div>';
+}
+function chatScreen(){
+  var chips=[['exam','考試很緊張'],['sleep','連續睡不好'],['help','覺得自己沒用'],['crisis','危機訊息(示範)']];
+  return '<div class="screen flush"><div class="dogbar"><div class="dwrap">'+dog(S.dogMood)+'</div><div><b>來福</b><span>'+CAPTION[S.dogMood]+'</span></div></div>'+
+   '<div class="msgs" id="msgs" role="log" aria-live="polite">'+S.chat.map(msgHtml).join('')+(S.typing?'<div class="typing" aria-label="來福正在輸入"><i></i><i></i><i></i></div>':'')+'</div>'+
+   '<div class="try"><span>示範劇本,點一下會送出一段話</span><div class="chips">'+chips.map(function(c){return '<button class="chip" data-act="script" data-k="'+c[0]+'">'+c[1]+'</button>'}).join('')+'</div></div>'+
+   '<form class="composer" id="composer"><button type="button" class="mic" data-act="mic" aria-label="語音"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>'+
+   '<input id="chatInput" type="text" maxlength="200" autocomplete="off" placeholder="想說什麼都可以" aria-label="輸入訊息"><button class="btn" type="submit">送出</button></form></div>';
+}
+
+/* ---------- 學生:日記、預約、隱私 ---------- */
+function diaryScreen(){
+  var last7=S.diary.slice(-7);
+  var recent=S.diary.slice().reverse().slice(0,5);
+  return '<div class="screen"><div class="stack"><div><h2>心情日記</h2><p class="muted">只有你看得到。要不要給輔導老師看,由你決定。</p></div>'+
+   '<div class="card"><h3>近 7 筆心情</h3>'+chart(last7)+'<p class="muted">前 7 筆是示範資料,你新增的會接在後面。</p></div>'+
+   '<div class="card"><h3>記下現在的心情</h3><div class="moods" role="group" aria-label="選擇心情">'+
+    [1,2,3,4,5].map(function(m){return '<button data-act="mood" data-m="'+m+'" aria-pressed="'+(S.diaryMood===m)+'">'+face(m)+MOODN[m]+'</button>'}).join('')+'</div>'+
+    '<label for="diaryNote" class="muted" style="display:block;margin:10px 0 4px">想補充的話(可不寫)</label><textarea id="diaryNote" maxlength="120">'+esc(S.diaryNote)+'</textarea>'+
+    '<button class="btn block" style="margin-top:10px" data-act="diary-save"'+(S.diaryMood?'':' disabled')+'>記下來</button></div>'+
+   '<div class="card"><h3>最近的紀錄</h3>'+recent.map(function(e){return '<div class="entry"><time>'+e.d+'</time><div>'+MOODN[e.mood]+(e.note?' · '+esc(e.note):'')+'</div></div>'}).join('')+'</div>'+
+   '<div class="card">'+sw('shareDiary',S.shareDiary,'讓輔導老師看到心情日記','關閉時老師看不到,隨時可以改')+'</div></div></div>';
+}
+var SLOTS=[['盡快','今天有空檔就安排'],['週一 午休','12:20–12:50'],['週二 放學後','16:10–16:40'],['週四 午休','12:20–12:50']];
+var TOPICS=['考試壓力','朋友相處','睡不好','不想說'];
+function bookScreen(){
+  var b=S.book;
+  if(b.done)return '<div class="screen"><div class="ok"><div class="big">'+dog('happy')+'</div><h2>已送出預約</h2><p>輔導室會收到你選的時段'+(b.topics.length?'和想聊的方向':'')+',不會看到你跟來福說的話。</p><p class="muted">這是原型示範,沒有真的送出。</p><button class="btn block" data-act="book-reset">再預約一次</button><button class="btn soft block" data-act="tab" data-t="chat">回到來福</button></div></div>';
+  return '<div class="screen"><div class="stack"><div><h2>預約輔導老師</h2><p class="muted">不用說明原因,你不想說的,老師不會問。</p></div>'+
+   (b.urgent?'<div class="notice" style="background:var(--crit-soft);color:var(--on-crit)">想儘快見到老師的話,選「盡快」,或直接走到輔導室找老師。</div>':'')+
+   '<div class="stack" style="gap:8px" role="group" aria-label="選擇時段">'+SLOTS.map(function(s,i){return '<button class="slot" data-act="slot" data-i="'+i+'" aria-pressed="'+(b.slot===i)+'"><span class="rd"></span><span><b>'+s[0]+'</b><small>'+s[1]+(i===0&&!S.teacherOnline?' · 老師目前不在線,上班時會看到':'')+'</small></span></button>'}).join('')+'</div>'+
+   '<div class="card"><h3>想聊的方向(可不選)</h3><div class="chips">'+TOPICS.map(function(t){return '<button class="chip'+(b.topics.indexOf(t)>-1?' on':'')+'" data-act="topic" data-t="'+t+'" aria-pressed="'+(b.topics.indexOf(t)>-1)+'">'+t+'</button>'}).join('')+'</div></div>'+
+   '<button class="btn block" data-act="book-send"'+(b.slot===null?' disabled':'')+'>送出預約</button><p class="muted">時段為示範內容,不是真實排程。</p></div></div>';
+}
+function matrixHtml(){
+  var tr=function(on){return [on?'已授權,可見':'未授權,不可見',on?'y':'n']};
+  var rows=[
+   ['對話原文',[['學生本人','可見、可刪除','y'],['輔導老師','不可見(危機時依規定調閱)','c'],['家長','不可見','n'],['校安中心','不可見','n']]],
+   ['心情日記',[['學生本人','可見','y'],['輔導老師'].concat(tr(S.shareDiary)),['家長','不可見','n'],['校安中心','不可見','n']]],
+   ['情緒趨勢摘要(去識別化)',[['學生本人','可見','y'],['輔導老師'].concat(tr(S.shareTrend)),['家長','僅見使用頻率等非內容資訊','c'],['校安中心','不可見','n']]],
+   ['危機事件通知',[['學生本人','事先被告知會通知','y'],['輔導老師','可見','y'],['家長','依輔導判斷、依法通知','c'],['校安中心','可見','y']]]
+  ];
+  return rows.map(function(r){return '<div class="mx"><h4>'+r[0]+'</h4>'+r[1].map(function(c){return '<div class="mxr"><span>'+c[0]+'</span><span class="tag t'+c[2]+'">'+c[1]+'</span></div>'}).join('')+'</div>'}).join('');
+}
+function privacyScreen(){
+  return '<div class="screen"><div class="stack"><div><h2>誰能看到什麼</h2><p class="muted">保密有例外,而且事先告訴你。</p></div>'+
+   '<div class="card">'+sw('shareDiary',S.shareDiary,'心情日記給輔導老師看','預設關閉')+sw('shareTrend',S.shareTrend,'情緒趨勢摘要給輔導老師看','只有曲線,沒有對話內容')+'</div>'+
+   matrixHtml()+
+   '<div class="card"><h3>例外情況</h3><p>只有提到想傷害自己、傷害別人,或是被別人傷害,依法需要通報時,輔導人員才會收到通知。家長同意你使用來福,不等於同意看你的對話或日記。</p></div>'+
+   '<div class="card"><h3>誰調閱過我的資料</h3><div class="log">'+(S.access.length?S.access.map(function(a){return '<div><b>'+a.t+'</b> · '+a.text+'</div>'}).join(''):'<span class="muted">目前沒有任何人調閱你的資料。</span>')+'</div></div>'+
+   '<div class="card"><h3>對話原文</h3>'+(S.confirmDel
+     ?'<p>刪除後無法復原,確定要刪除嗎?</p><div class="chips" style="margin-top:8px"><button class="btn small" data-act="del-yes">確定刪除</button><button class="btn line small" data-act="del-no">先不要</button></div>'
+     :'<button class="btn line small" data-act="del-ask">刪除所有對話原文</button>')+'</div></div></div>';
+}
+
+/* ---------- 老師與家長 ---------- */
+function plab(a){return a.lv==='B'?'預約':'L'+a.lv}
+function teacherScreen(){
+  var fs=[['all','全部'],['3','L3'],['2','L2'],['1','L1'],['B','預約']];
+  var list=S.alerts.slice().sort(function(a,b){return (b.lv===3)-(a.lv===3)}).filter(function(a){return S.filter==='all'||String(a.lv)===S.filter});
+  return '<div class="screen"><div class="stack"><div><h2>需要關心的學生</h2><p class="muted">只顯示學生同意分享或依規定通知的項目,看不到對話原文。L0 和未授權的 L1 不會出現在這裡。</p></div>'+
+   '<div class="chips" role="group" aria-label="篩選">'+fs.map(function(f){return '<button class="chip'+(S.filter===f[0]?' on':'')+'" data-act="filter" data-f="'+f[0]+'">'+f[1]+'</button>'}).join('')+'</div>'+
+   (list.length?list.map(function(a){return '<button class="alert'+(a.lv===3?' l3':'')+'" data-act="open-alert" data-id="'+a.id+'"><div class="meta"><span class="pill lv'+a.lv+'">'+plab(a)+'</span><b>'+a.code+'</b><span>'+a.time+'</span><span class="state">'+a.state+'</span></div><div>'+esc(a.headline)+'</div></button>'}).join(''):'<p class="muted">這個分類目前沒有項目。</p>')+
+   '</div></div>';
+}
+function alertSheetHtml(id){
+  var a=S.alerts.filter(function(x){return x.id===id})[0];if(!a)return '';
+  var trend=a.trend;if(a.dyn)trend=S.shareTrend?S.diary.slice(-7).map(function(e){return e.mood}):null;
+  var h='<div class="sheet-head"><b>'+a.code+' <span class="pill lv'+a.lv+'">'+plab(a)+'</span></b><button class="ghost" data-act="close-sheet">關閉</button></div>'+
+   '<div class="card"><h3>為什麼出現在這裡</h3><p>'+esc(a.consent)+'。'+esc(a.headline)+'。</p></div>'+
+   '<div class="card"><h3>近 7 日心情趨勢(去識別化)</h3>'+(trend?spark(trend):'<p class="muted">學生未授權趨勢摘要,只顯示提醒。</p>')+'</div>';
+  if(a.factors)h+='<div class="card"><h3>主要壓力來源</h3><div class="tags">'+a.factors.map(function(f){return '<span class="tag">'+esc(f)+'</span>'}).join('')+'</div></div>';
+  if(a.lv===3)h+='<div class="card" style="border-color:var(--crit)"><h3>立即危機通知</h3><p>依規定啟動通報與校安機制。'+(S.teacherOnline?'老師目前在線,請儘快接觸學生。':'目前非上班時段,已排入上班時第一時間通知,學生已被引導聯絡 1925。')+'</p></div>';
+  h+='<div class="card"><h3>建議接觸方式</h3><p>'+esc(a.tip||'先確認學生現在是否安全,再依輔導流程接觸。')+'</p></div><p class="muted">不含對話原文。系統只做篩選與銜接,不是診斷。</p>';
+  h+=a.state==='已接觸'?'<button class="btn soft block" disabled>已標記為已接觸</button>':'<button class="btn block" data-act="contacted" data-id="'+a.id+'">標記為已接觸</button>';
+  return h;
+}
+function parentScreen(){
+  var days=['一','二','三','四','五','六','日'],cnt=[1,2,0,3,1,0,1],max=3;
+  return '<div class="screen"><div class="stack"><div><h2>家長專區</h2><p class="muted">在孩子敢開口和您想放心之間,我們先把界線說清楚。</p></div>'+
+   '<div class="card"><h3>同意狀態</h3><p>您已同意孩子使用來福。同意使用,不包含查看對話或日記,孩子需要另外授權才會分享給輔導老師。</p></div>'+
+   '<div class="card"><h3>本週使用頻率(示範資料)</h3><div class="bars">'+cnt.map(function(c,i){return '<div><i class="'+(c?'':'zero')+'" style="height:'+(c?Math.round(c/max*80)+10:6)+'px"></i>'+days[i]+'</div>'}).join('')+'</div><p class="muted" style="margin-top:8px">只顯示使用次數,不顯示任何對話內容。</p></div>'+
+   '<div class="card"><h3>您看不到什麼</h3><ul><li>對話原文與心情日記</li><li>孩子授權給輔導老師的趨勢摘要</li></ul><p class="muted" style="margin-top:6px">因為孩子知道不會被看見,才敢說真話。</p></div>'+
+   '<div class="card"><h3>發生立即危機時</h3><p>輔導老師會依輔導判斷、依法通知您。這個例外在孩子第一次使用時就已經告訴他。</p></div>'+
+   '<div class="card"><h3>和孩子聊聊</h3><ul><li>先問「最近還好嗎」,不急著追問原因</li><li>孩子願意說時,先聽完再討論</li><li>系統會鼓勵孩子多找朋友和老師,避免只依賴 AI</li></ul></div></div></div>';
+}
+
+/* ---------- 外框 ---------- */
+function shell(title,sub,body,nav,flush){
+  return '<header class="app-head"><div class="who"><div class="av">'+dog('happy')+'</div><div><b>'+title+'</b><span>'+sub+'</span></div></div><button class="ghost" data-act="switch">換身分</button></header>'+body+(nav||'');
+}
+function studentNav(){
+  var t=[['chat','聊聊','chat'],['diary','心情日記','diary'],['book','預約老師','book'],['privacy','隱私','shield']];
+  return '<nav class="nav" aria-label="主選單">'+t.map(function(x){return '<button data-act="tab" data-t="'+x[0]+'"'+(S.tab===x[0]?' aria-current="page"':'')+'><svg viewBox="0 0 24 24" aria-hidden="true">'+ICON[x[2]]+'</svg>'+x[1]+'</button>'}).join('')+'</nav>';
+}
+function phoneHtml(){
+  var inner;
+  if(!S.role)inner=roleScreen();
+  else if(S.role==='student'&&!S.introDone)inner=introScreen();
+  else if(S.role==='student'){
+    var body={chat:chatScreen,diary:diaryScreen,book:bookScreen,privacy:privacyScreen}[S.tab]();
+    inner=shell('來福','校園陪伴夥伴',body,studentNav());
+  }
+  else if(S.role==='teacher')inner=shell('輔導前哨站','輔導室專用 · 示範資料',teacherScreen(),'');
+  else inner=shell('家長專區','了解與安心','' +parentScreen(),'');
+  return inner+sheetHtml()+(S.toast?'<div class="toast" role="status">'+esc(S.toast)+'</div>':'');
+}
+function breathHtml(){
+  return '<div class="sheet-head"><b>三輪慢慢呼吸</b><button class="ghost" data-act="close-sheet">關閉</button></div>'+
+   '<div class="breath"><div class="bcircle" id="bCircle">'+dog('calm')+'</div><div class="btext" id="bText">準備好了就按開始</div><div class="muted" id="bSub">吸氣 4 秒,吐氣 6 秒,共三輪</div><button class="btn" id="bBtn" data-act="breath-start">開始</button></div>';
+}
+function sheetHtml(){
+  if(!S.sheet)return '';
+  var body=S.sheet.type==='breath'?breathHtml():alertSheetHtml(S.sheet.id);
+  return '<div class="sheet-wrap"><button class="scrim" data-act="close-sheet" aria-label="關閉"></button><div class="sheet" role="dialog" aria-modal="true">'+body+'</div></div>';
+}
+function infoHtml(){
+  var d=S.lastDetect,det;
+  if(d){var L=LV[d.level];
+    det='<p><span class="pill lv'+d.level+'">'+L.n+'</span> <small class="muted">'+d.time+'</small></p><h4>偵測到的訊號</h4><ul>'+d.signals.map(function(s){return '<li>'+s+'</li>'}).join('')+'</ul><h4>對應的介入方式</h4><dl class="kv"><dt>AI 的行為</dt><dd>'+L.ai+'</dd><dt>人員介入</dt><dd>'+L.staff+'</dd><dt>資料揭露</dt><dd>'+L.data+'</dd></dl>';
+  }else det='<p class="muted">到「學生」身分的聊天畫面,點示範劇本或自己輸入文字,這裡會顯示系統偵測到的訊號,和報告表 2 對應的介入方式。</p>';
+  return '<section class="panel"><h3>示範資訊:危機分級</h3>'+det+'</section>'+
+   '<section class="panel"><h3>這個原型是什麼</h3><ul><li>對話回覆是預設劇本,沒有連接真實 AI。</li><li>所有資料都是虛構的,請不要輸入真實個資。</li><li>危機偵測只是示意,不具備診斷或通報功能。</li><li>三種身分共用同一份資料:在學生端同意分享,老師端就會出現提醒。</li><li>右上角可切換「輔導老師在線」,看非上班時段的危機流程。</li></ul></section>';
+}
+
+/* ---------- 繪製 ---------- */
+function render(){
+  var keep={};[].forEach.call(document.querySelectorAll('input[id],textarea[id]'),function(el){keep[el.id]=el.value});
+  var act=document.activeElement&&document.activeElement.id;
+  var sig=S.role+'|'+S.tab+'|'+S.introStep;
+  var sc=$('#screen')||document.querySelector('.screen');var top=sc&&sig===lastSig?sc.scrollTop:0;
+  $('#phone').innerHTML=phoneHtml();
+  $('#info').innerHTML=infoHtml();
+  [].forEach.call(document.querySelectorAll('input[id],textarea[id]'),function(el){if(keep[el.id]!=null&&el.id!=='chatInput'||(el.id==='chatInput'&&keep[el.id]))el.value=keep[el.id]});
+  if(act){var f=document.getElementById(act);if(f&&(f.tagName==='INPUT'||f.tagName==='TEXTAREA'))f.focus()}
+  var sc2=document.querySelector('.screen');if(sc2&&!sc2.classList.contains('flush'))sc2.scrollTop=top;
+  var m=$('#msgs');if(m)m.scrollTop=m.scrollHeight;
+  lastSig=sig;
+  [].forEach.call(document.querySelectorAll('.seg button'),function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-role')===S.role))});
+  var t=document.querySelector('.tools .switch');if(t)t.setAttribute('aria-checked',String(S.teacherOnline));
+}
+function toast(t){S.toast=t;var old=$('.toast');if(old)old.remove();var el=document.createElement('div');el.className='toast';el.setAttribute('role','status');el.textContent=t;$('#phone').appendChild(el);clearTimeout(tt);tt=setTimeout(function(){S.toast=null;var x=$('.toast');if(x)x.remove()},2200)}
+
+/* ---------- 行為 ---------- */
+function dogSay(msg){
+  S.typing=true;render();
+  setTimeout(function(){S.typing=false;msg.from='dog';msg.id=uid();S.chat.push(msg);S.dogMood=msg.mood||'happy';render()},700);
+}
+function userSay(t){S.chat.push({from:'user',id:uid(),text:t})}
+function addAlert(a){a.id=uid();a.kind=a.kind||'alert';a.state=a.state||'未接觸';S.alerts.unshift(a)}
+function send(text,key){
+  if(S.typing||!text)return;
+  userSay(text);
+  var k=key||detect(text),sc=SCR[k];
+  S.lastDetect={key:k,level:sc.level,signals:sc.signals,time:nowT()};
+  if(k==='crisis'){
+    addAlert({lv:3,code:'B-0417',time:nowL(),headline:'學生表述想傷害自己,已啟動立即危機流程',consent:'依事前說明通知(自傷表述)',dyn:true,tip:'請先確認學生現在是否安全,並依通報流程處理。'});
+    S.access.push({t:nowL(),text:'輔導人員與校安機制收到危機通知(依事前說明的例外)'});
+    dogSay({kind:'crisis',mood:'soft',why:'你提到想傷害自己。這件事比聊天更重要,所以我先停下來,讓真人和求助資源接手。',signals:sc.signals,
+      actions:[{d:'urgent',l:'聯絡輔導老師'},{d:'stay',l:'我還在,想先待在這裡'}]});
+  }else{
+    var r=sc.reply;
+    dogSay({mood:r.mood,html:r.html,actions:r.actions,why:r.why,signals:sc.signals});
+  }
+}
+function chatDo(id,d){
+  var m=S.chat.filter(function(x){return x.id===id})[0];if(!m||m.used||S.typing)return;
+  var labels={breath:'開始呼吸練習',more:'我想繼續說',book:'預約輔導老師',yes:'願意,請老師關心我',no:'先不要',info:'老師會看到什麼?',urgent:'聯絡輔導老師',stay:'我還在,想先待在這裡'};
+  m.used=true;userSay(labels[d]);
+  if(d==='breath'){S.sheet={type:'breath'};render()}
+  else if(d==='more'){dogSay({mood:'listen',html:'好,我在聽。你想從哪裡開始都可以,慢慢來。'})}
+  else if(d==='book'){S.tab='book';S.book.urgent=false;render()}
+  else if(d==='urgent'){S.tab='book';S.book.urgent=true;render()}
+  else if(d==='stay'){dogSay({mood:'soft',html:'好,我在這裡,你不用一直說話。如果可以,請先打 1925,或走到身邊有大人的地方。'})}
+  else if(d==='info'){dogSay({mood:'listen',html:'老師只會看到一則去識別化的提醒,不會看到你跟我說的話。你同意之後才會送出。',
+    actions:[{d:'yes',l:'願意,請老師關心我'},{d:'no',l:'先不要'}]})}
+  else if(d==='yes'){
+    if(!S.consentL2){S.consentL2=true;
+      addAlert({lv:2,code:'B-0417',time:nowL(),headline:'學生同意讓老師知道最近很辛苦',consent:'學生同意後送出的提醒',dyn:true,factors:['自我否定','近幾天心情偏低'],tip:'先讓學生決定要談多少,不要一開始就追問細節。'});
+      S.access.push({t:nowL(),text:'輔導老師收到一則去識別化提醒(你同意送出)'})}
+    dogSay({mood:'soft',html:'謝謝你相信我。老師只會收到「這位同學最近需要關心」的提醒,看不到你說的內容。你可以在「隱私」頁看到這次的紀錄。我還是會在這裡陪你。',
+      actions:[{d:'book',l:'預約輔導老師'}]})}
+  else if(d==='no'){dogSay({mood:'soft',html:'好,這是你的決定,我不會通知老師。我會繼續陪你。如果之後想讓老師知道,隨時跟我說,或自己預約也可以。',
+      actions:[{d:'book',l:'自己預約輔導老師'},{d:'more',l:'繼續聊'}]})}
+}
+function breathStop(){clearInterval(bTimer);bTimer=null}
+function breathStart(){
+  breathStop();
+  var c=$('#bCircle'),t=$('#bText'),s=$('#bSub'),b=$('#bBtn');if(!c)return;
+  b.hidden=true;
+  var round=1,phase='in',left=4;
+  var apply=function(){var i=phase==='in';c.style.transitionDuration=(i?4:6)+'s';c.style.transform=i?'scale(1.3)':'scale(1)';t.textContent=(i?'慢慢吸氣 ':'慢慢吐氣 ')+left;s.textContent='第 '+round+' 輪,共 3 輪'};
+  apply();
+  bTimer=setInterval(function(){
+    left--;
+    if(left===0){
+      if(phase==='in'){phase='out';left=6;apply();return}
+      if(round===3){breathStop();t.textContent='做得很好';s.textContent='感覺有沒有輕鬆一點?';b.hidden=false;b.textContent='回到來福';b.setAttribute('data-act','breath-done');return}
+      round++;phase='in';left=4;apply();return;
+    }
+    t.textContent=(phase==='in'?'慢慢吸氣 ':'慢慢吐氣 ')+left;
+  },1000);
+}
+function closeSheet(){breathStop();S.sheet=null;render()}
+
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-act]');if(!el)return;
+  var a=el.getAttribute('data-act'),D=function(k){return el.getAttribute('data-'+k)};
+  switch(a){
+   case 'role-jump':case 'role':S.role=D('role');S.tab='chat';S.sheet=null;S.filter='all';render();break;
+   case 'switch':S.role=null;S.sheet=null;render();break;
+   case 'reset':breathStop();initState();render();break;
+   case 'toggle':S[D('k')]=!S[D('k')];render();break;
+   case 'intro-next':if(S.introStep<INTRO.length-1)S.introStep++;else S.introDone=true;render();break;
+   case 'intro-skip':S.introDone=true;render();break;
+   case 'tab':S.tab=D('t');if(D('t')!=='privacy')S.confirmDel=false;S.sheet=null;render();break;
+   case 'script':send(SCR[D('k')].userText,D('k'));break;
+   case 'chat-do':chatDo(+D('id'),D('d'));break;
+   case 'xai':var m=S.chat.filter(function(x){return x.id===+D('id')})[0];if(m){m.xaiOpen=!m.xaiOpen;render()}break;
+   case 'mic':toast('語音對話會在正式版提供,這個原型先用文字');break;
+   case 'copy':try{navigator.clipboard.writeText(D('v')).then(function(){toast('已複製 '+D('v'))},function(){toast('請記下號碼 '+D('v'))})}catch(x){toast('請記下號碼 '+D('v'))}break;
+   case 'mood':S.diaryMood=+D('m');render();break;
+   case 'diary-save':if(S.diaryMood){S.diary.push({d:fmtD(new Date()),mood:S.diaryMood,note:S.diaryNote.trim()});S.diaryMood=null;S.diaryNote='';render();toast('已記下今天的心情')}break;
+   case 'slot':S.book.slot=+D('i');render();break;
+   case 'topic':var i=S.book.topics.indexOf(D('t'));if(i>-1)S.book.topics.splice(i,1);else S.book.topics.push(D('t'));render();break;
+   case 'book-send':
+     addAlert({lv:'B',kind:'booking',code:'B-0417',time:nowL(),headline:'學生預約面談:'+SLOTS[S.book.slot][0]+(S.book.topics.length?'(想聊:'+S.book.topics.join('、')+')':''),consent:'學生主動預約',state:'已預約',dyn:true,tip:'不需要先問原因,讓學生決定要談什麼。'});
+     S.access.push({t:nowL(),text:'輔導室收到你的預約時段'+(S.book.topics.length?'和想聊的方向':'')});
+     S.book.done=true;render();break;
+   case 'book-reset':S.book={slot:null,topics:[],done:false,urgent:false};render();break;
+   case 'del-ask':S.confirmDel=true;render();break;
+   case 'del-no':S.confirmDel=false;render();break;
+   case 'del-yes':S.confirmDel=false;S.chat=[{from:'dog',id:uid(),mood:'happy',html:'對話已刪除,我們可以重新開始。想說什麼都可以。'}];S.dogMood='happy';render();toast('已刪除所有對話原文');break;
+   case 'filter':S.filter=D('f');render();break;
+   case 'open-alert':S.sheet={type:'alert',id:+D('id')};render();break;
+   case 'contacted':S.alerts.forEach(function(x){if(x.id===+D('id'))x.state='已接觸'});render();toast('已標記為已接觸');break;
+   case 'close-sheet':closeSheet();break;
+   case 'breath-start':breathStart();break;
+   case 'breath-done':breathStop();S.sheet=null;S.dogMood='calm';S.chat.push({from:'dog',id:uid(),mood:'calm',html:'做得很好。你願意說說現在的感覺嗎?不想說也沒關係。',actions:[{d:'more',l:'我想說說'}]});render();break;
+  }
+});
+document.addEventListener('submit',function(e){
+  if(e.target.id!=='composer')return;e.preventDefault();
+  var i=$('#chatInput'),v=i.value.trim();if(!v||S.typing)return;i.value='';send(v);
+});
+document.addEventListener('input',function(e){if(e.target.id==='diaryNote')S.diaryNote=e.target.value});
+
+initState();render();
+})();
+</script>
